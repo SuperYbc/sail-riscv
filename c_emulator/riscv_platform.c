@@ -33,6 +33,9 @@ bool plat_mtval_has_illegal_inst_bits(unit u)
 bool plat_enable_pmp(unit u)
 { return rv_enable_pmp; }
 
+bool plat_enable_spmp(unit u)
+{ return rv_enable_spmp; }
+
 mach_bits plat_ram_base(unit u)
 { return rv_ram_base; }
 

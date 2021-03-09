@@ -40,6 +40,9 @@ let options = Arg.align ([("-dump-dts",
                           ("-enable-pmp",
                            Arg.Set P.config_enable_pmp,
                            " enable PMP support");
+                          ("-enable-spmp",
+                           Arg.Set P.config_enable_spmp,
+                           " enable sPMP support");
                           ("-enable-next",
                            Arg.Set P.config_enable_next,
                            " enable N extension");
