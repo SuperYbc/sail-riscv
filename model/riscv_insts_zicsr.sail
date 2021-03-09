@@ -42,6 +42,11 @@ function readCSR csr : csreg -> xlenbits = {
     (0x3A2,  _) => pmpReadCfgReg(2),           // pmpcfg2
     (0x3A3, 32) => pmpReadCfgReg(3),           // pmpcfg3
 
+    (0x1A0,  _) => spmpReadCfgReg(0),           // spmpcfg0
+    (0x1A1, 32) => spmpReadCfgReg(1),           // spmpcfg1
+    (0x1A2,  _) => spmpReadCfgReg(2),           // spmpcfg2
+    (0x1A3, 32) => spmpReadCfgReg(3),           // spmpcfg3
+
     (0x3B0,  _) => pmpaddr0,
     (0x3B1,  _) => pmpaddr1,
     (0x3B2,  _) => pmpaddr2,
@@ -58,6 +63,23 @@ function readCSR csr : csreg -> xlenbits = {
     (0x3BD,  _) => pmpaddr13,
     (0x3BE,  _) => pmpaddr14,
     (0x3BF,  _) => pmpaddr15,
+
+    (0x1B0,  _) => spmpaddr0,
+    (0x1B1,  _) => spmpaddr1,
+    (0x1B2,  _) => spmpaddr2,
+    (0x1B3,  _) => spmpaddr3,
+    (0x1B4,  _) => spmpaddr4,
+    (0x1B5,  _) => spmpaddr5,
+    (0x1B6,  _) => spmpaddr6,
+    (0x1B7,  _) => spmpaddr7,
+    (0x1B8,  _) => spmpaddr8,
+    (0x1B9,  _) => spmpaddr9,
+    (0x1BA,  _) => spmpaddr10,
+    (0x1BB,  _) => spmpaddr11,
+    (0x1BC,  _) => spmpaddr12,
+    (0x1BD,  _) => spmpaddr13,
+    (0x1BE,  _) => spmpaddr14,
+    (0x1BF,  _) => spmpaddr15,
 
     /* machine mode counters */
     (0xB00,  _) => mcycle[(sizeof(xlen) - 1) .. 0],
@@ -143,6 +165,28 @@ function writeCSR (csr : csreg, value : xlenbits) -> unit = {
     (0x3BD,  _) => { pmpaddr13 = pmpWriteAddr(pmpLocked(pmp13cfg), pmpTORLocked(pmp14cfg), pmpaddr13, value); Some(pmpaddr13) },
     (0x3BE,  _) => { pmpaddr14 = pmpWriteAddr(pmpLocked(pmp14cfg), pmpTORLocked(pmp15cfg), pmpaddr14, value); Some(pmpaddr14) },
     (0x3BF,  _) => { pmpaddr15 = pmpWriteAddr(pmpLocked(pmp15cfg), false,                  pmpaddr15, value); Some(pmpaddr15) },
+
+    (0x1A0,  _) => { spmpWriteCfgReg(0, value); Some(spmpReadCfgReg(0)) },  // spmpcfg0
+    (0x1A1, 32) => { spmpWriteCfgReg(1, value); Some(spmpReadCfgReg(1)) },  // spmpcfg1
+    (0x1A2,  _) => { spmpWriteCfgReg(2, value); Some(spmpReadCfgReg(2)) },  // spmpcfg2
+    (0x1A3, 32) => { spmpWriteCfgReg(3, value); Some(spmpReadCfgReg(3)) },  // spmpcfg3
+
+    (0x1B0,  _) => { spmpaddr0  = spmpWriteAddr(spmpaddr0,  value); Some(spmpaddr0) },
+    (0x1B1,  _) => { spmpaddr1  = spmpWriteAddr(spmpaddr1,  value); Some(spmpaddr1) },
+    (0x1B2,  _) => { spmpaddr2  = spmpWriteAddr(spmpaddr2,  value); Some(spmpaddr2) },
+    (0x1B3,  _) => { spmpaddr3  = spmpWriteAddr(spmpaddr3,  value); Some(spmpaddr3) },
+    (0x1B4,  _) => { spmpaddr4  = spmpWriteAddr(spmpaddr4,  value); Some(spmpaddr4) },
+    (0x1B5,  _) => { spmpaddr5  = spmpWriteAddr(spmpaddr5,  value); Some(spmpaddr5) },
+    (0x1B6,  _) => { spmpaddr6  = spmpWriteAddr(spmpaddr6,  value); Some(spmpaddr6) },
+    (0x1B7,  _) => { spmpaddr7  = spmpWriteAddr(spmpaddr7,  value); Some(spmpaddr7) },
+    (0x1B8,  _) => { spmpaddr8  = spmpWriteAddr(spmpaddr8,  value); Some(spmpaddr8) },
+    (0x1B9,  _) => { spmpaddr9  = spmpWriteAddr(spmpaddr9,  value); Some(spmpaddr9) },
+    (0x1BA,  _) => { spmpaddr10 = spmpWriteAddr(spmpaddr10, value); Some(spmpaddr10) },
+    (0x1BB,  _) => { spmpaddr11 = spmpWriteAddr(spmpaddr11, value); Some(spmpaddr11) },
+    (0x1BC,  _) => { spmpaddr12 = spmpWriteAddr(spmpaddr12, value); Some(spmpaddr12) },
+    (0x1BD,  _) => { spmpaddr13 = spmpWriteAddr(spmpaddr13, value); Some(spmpaddr13) },
+    (0x1BE,  _) => { spmpaddr14 = spmpWriteAddr(spmpaddr14, value); Some(spmpaddr14) },
+    (0x1BF,  _) => { spmpaddr15 = spmpWriteAddr(spmpaddr15, value); Some(spmpaddr15) },
 
     /* machine mode counters */
     (0xB00,  _) => { mcycle[(sizeof(xlen) - 1) .. 0] = value; Some(value) },
