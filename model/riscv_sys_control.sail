@@ -52,6 +52,30 @@ function is_CSR_defined (csr : csreg, p : Privilege) -> bool =
     0x3BE => p == Machine, // pmpaddrE
     0x3BF => p == Machine, // pmpaddrF
 
+    // sPMP config registers
+    0x1A0 => p == Supervisor,                        // spmpcfg0
+    0x1A1 => p == Supervisor & (sizeof(xlen) == 32), // spmpcfg1
+    0x1A2 => p == Supervisor,                        // spmpcfg2
+    0x1A3 => p == Supervisor & (sizeof(xlen) == 32), // spmpcfg3
+
+    // sPMP address registers
+    0x1B0 => p == Supervisor, // spmpaddr0
+    0x1B1 => p == Supervisor, // spmpaddr1
+    0x1B2 => p == Supervisor, // spmpaddr2
+    0x1B3 => p == Supervisor, // spmpaddr3
+    0x1B4 => p == Supervisor, // spmpaddr4
+    0x1B5 => p == Supervisor, // spmpaddr5
+    0x1B6 => p == Supervisor, // spmpaddr6
+    0x1B7 => p == Supervisor, // spmpaddr7
+    0x1B8 => p == Supervisor, // spmpaddr8
+    0x1B9 => p == Supervisor, // spmpaddr9
+    0x1BA => p == Supervisor, // spmpaddrA
+    0x1BB => p == Supervisor, // spmpaddrB
+    0x1BC => p == Supervisor, // spmpaddrC
+    0x1BD => p == Supervisor, // spmpaddrD
+    0x1BE => p == Supervisor, // spmpaddrE
+    0x1BF => p == Supervisor, // spmpaddrF
+
     /* counters */
     0xB00 => p == Machine, // mcycle
     0xB02 => p == Machine, // minstret
@@ -503,6 +527,7 @@ function init_sys() -> unit = {
   minstret_written   = false;
 
   init_pmp();
+  init_spmp();
 
   // log compatibility with spike
   if   get_config_print_reg()
