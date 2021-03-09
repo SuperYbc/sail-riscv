@@ -59,15 +59,30 @@ function checked_mem_read forall 'n, 0 < 'n <= max_mem_access . (t : AccessType(
     _          => MemException(E_SAMO_Access_Fault())
   }
 
-/* PMP checks if enabled */
-function pmp_mem_read forall 'n, 0 < 'n <= max_mem_access . (t : AccessType(ext_access_type), paddr : xlenbits, width : atom('n), aq : bool, rl : bool, res: bool, meta : bool) -> MemoryOpResult((bits(8 * 'n), mem_meta)) =
-  if   (~ (plat_enable_pmp ()))
+/* sPMP checks if enabled */
+function spmp_mem_read forall 'n, 0 < 'n <= max_mem_access . (t : AccessType(ext_access_type), paddr : xlenbits, width : atom('n), aq : bool, rl : bool, res: bool, meta : bool) -> MemoryOpResult((bits(8 * 'n), mem_meta)) =
+  if (~ (plat_enable_spmp()))
   then checked_mem_read(t, paddr, width, aq, rl, res, meta)
   else {
-    match pmpCheck(paddr, width, t, effectivePrivilege(t, mstatus, cur_privilege)) {
+    match spmpCheck(paddr, width, t, effectivePrivilege(t, mstatus, cur_privilege)) {
       None()  => checked_mem_read(t, paddr, width, aq, rl, res, meta),
       Some(e) => MemException(e)
     }
+  }
+
+/* PMP checks if enabled */
+function pmp_mem_read forall 'n, 0 < 'n <= max_mem_access . (t : AccessType(ext_access_type), paddr : xlenbits, width : atom('n), aq : bool, rl : bool, res: bool, meta : bool) -> MemoryOpResult((bits(8 * 'n), mem_meta)) =
+  if   ((~ (plat_enable_pmp())) & (~ (plat_enable_spmp())))
+  then checked_mem_read(t, paddr, width, aq, rl, res, meta)
+  else {
+    if (plat_enable_pmp())
+    then {
+      match pmpCheck(paddr, width, t, effectivePrivilege(t, mstatus, cur_privilege)) {
+        None()  => spmp_mem_read(t, paddr, width, aq, rl, res, meta),
+        Some(e) => MemException(e)
+      }
+    }
+    else spmp_mem_read(t, paddr, width, aq, rl, res, meta)
   }
 
 /* Atomic accesses can be done to MMIO regions, e.g. in kernel access to device registers. */
@@ -166,17 +181,33 @@ function checked_mem_write forall 'n, 0 < 'n <= max_mem_access . (wk : write_kin
   then phys_mem_write(wk, paddr, width, data, meta)
   else MemException(E_SAMO_Access_Fault())
 
-/* PMP checks if enabled */
-function pmp_mem_write forall 'n, 0 < 'n <= max_mem_access . (wk: write_kind, paddr : xlenbits, width : atom('n), data: bits(8 * 'n), ext_acc: ext_access_type, meta: mem_meta) -> MemoryOpResult(bool) =
-  if   (~ (plat_enable_pmp ()))
+/* sPMP checks if enabled */
+function spmp_mem_write forall 'n, 0 < 'n <= max_mem_access . (wk: write_kind, paddr : xlenbits, width : atom('n), data: bits(8 * 'n), typ: AccessType(ext_access_type), meta: mem_meta) -> MemoryOpResult(bool) =
+  if (~ (plat_enable_spmp()))
   then checked_mem_write(wk, paddr, width, data, meta)
   else {
-    let typ : AccessType(ext_access_type) = Write(ext_acc);
-    match pmpCheck(paddr, width, typ, effectivePrivilege(typ, mstatus, cur_privilege)) {
+    match spmpCheck(paddr, width, typ, effectivePrivilege(typ, mstatus, cur_privilege)) {
       None()  => checked_mem_write(wk, paddr, width, data, meta),
       Some(e) => MemException(e)
     }
   }
+
+/* PMP checks if enabled */
+function pmp_mem_write forall 'n, 0 < 'n <= max_mem_access . (wk: write_kind, paddr : xlenbits, width : atom('n), data: bits(8 * 'n), ext_acc: ext_access_type, meta: mem_meta) -> MemoryOpResult(bool) = {
+  let typ : AccessType(ext_access_type) = Write(ext_acc);
+  if   ((~ (plat_enable_pmp())) & (~ (plat_enable_spmp())))
+  then checked_mem_write(wk, paddr, width, data, meta)
+  else {
+    if (plat_enable_pmp())
+    then {
+      match pmpCheck(paddr, width, typ, effectivePrivilege(typ, mstatus, cur_privilege)) {
+        None()  => spmp_mem_write(wk, paddr, width, data, typ, meta),
+        Some(e) => MemException(e)
+      }
+    }
+    else spmp_mem_write(wk, paddr, width, data, typ, meta)
+  }
+}
 
 /* Atomic accesses can be done to MMIO regions, e.g. in kernel access to device registers. */
 
