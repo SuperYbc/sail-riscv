@@ -137,7 +137,11 @@ _start:
 
   .align 2
 trap_entry:
-  addi sp, sp, -272
+  #addi sp, sp, -272
+  # use shadow address
+  SREG sp, 31*REGBYTES(gp)
+  addi sp, gp, 512
+  addi sp, gp, 512
 
   SREG x1, 1*REGBYTES(sp)
   SREG x2, 2*REGBYTES(sp)
@@ -178,8 +182,8 @@ trap_entry:
   csrw mepc, a0
 
   # Remain in M-mode after eret
-  li t0, MSTATUS_MPP
-  csrs mstatus, t0
+  # li t0, MSTATUS_MPP
+  # csrs mstatus, t0
 
   LREG x1, 1*REGBYTES(sp)
   LREG x2, 2*REGBYTES(sp)
@@ -213,7 +217,8 @@ trap_entry:
   LREG x30, 30*REGBYTES(sp)
   LREG x31, 31*REGBYTES(sp)
 
-  addi sp, sp, 272
+  # addi sp, sp, 272
+  LREG sp, 31*REGBYTES(gp)
   mret
 
 .section ".tohost","aw",@progbits

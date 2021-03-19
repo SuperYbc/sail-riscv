@@ -23,7 +23,7 @@ SAIL_PATH = ../..
 SAIL_C_EMULATOR = $(SAIL_PATH)/c_emulator/riscv_sim_RV64
 RISCV_PREFIX ?= riscv$(XLEN)-unknown-elf-
 RISCV_GCC ?= $(RISCV_PREFIX)gcc
-RISCV_GCC_OPTS ?= -DPREALLOCATE=1 -mcmodel=medany -static -std=gnu99 -O2 -ffast-math -fno-common -fno-builtin-printf -fno-tree-loop-distribute-patterns
+RISCV_GCC_OPTS ?= -g -march=rv64imafd -DPREALLOCATE=1 -mcmodel=medany -static -std=gnu99 -O2 -ffast-math -fno-common -fno-builtin-printf -fno-tree-loop-distribute-patterns
 RISCV_LINK ?= $(RISCV_GCC) -T $(common_dir)/test.ld $(incs)
 RISCV_LINK_OPTS ?= -static -nostdlib -nostartfiles -lm -lgcc -T $(common_dir)/test.ld
 RISCV_OBJDUMP ?= $(RISCV_PREFIX)objdump --disassemble-all --disassemble-zeroes --section=.text --section=.text.startup --section=.text.init --section=.data
@@ -50,12 +50,18 @@ junk += $(riscv_bin) $(riscv_dump) $(riscv_out) $(riscv_log)
 
 #------------------------------------------------------------
 # Targets
+test = test_spmp_ok_u0_rw0_x0_s0_sum0_match1
 
 gen:
 	cd gengen_src; $(MAKE); $(MAKE) gen;
 
 all: $(OBJECTS) 
-	
+
+test: 
+	rm -f build/$(test).riscv
+	mkdir -p $(objs)
+	$(RISCV_GCC) $(incs) $(RISCV_GCC_OPTS) $(src_dir)/$(test).c $(common_dir)/*.c $(common_dir)/*.S $(RISCV_LINK_OPTS) -o $(objs)/$(test).riscv
+	$(SAIL_C_EMULATOR) --enable-pmp --enable-spmp $(objs)/$(test).riscv > tmp.log
 
 #------------------------------------------------------------
 # Clean up
