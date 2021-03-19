@@ -207,6 +207,7 @@ char *process_args(int argc, char **argv)
                     "d"
                     "m"
                     "P"
+                    "S"
                     "C"
                     "N"
                     "I"
@@ -493,7 +494,8 @@ void init_sail_reset_vector(uint64_t entry)
     write_mem(addr++, 0);
 
   /* set rom size */
-  rv_rom_size = rom_end - rv_rom_base;
+  // rv_rom_size = rom_end - rv_rom_base;
+  rv_rom_size = 0x10000000;
   /* boot at reset vector */
   zPC = rv_rom_base;
 }

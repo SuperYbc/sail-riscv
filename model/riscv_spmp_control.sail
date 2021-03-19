@@ -71,7 +71,7 @@ function spmpMatchAddr(addr: xlenbits, width: xlenbits, rng: spmp_addr_range) ->
     Some((lo, hi)) => if   hi <_u lo   /* to handle mis-configuration */
                       then SPMP_NoMatch
                       else {
-                        if      (addr + width <_u lo) | (hi <_u addr)
+                        if      (addr + width <=_u lo) | (hi <=_u addr)
                         then    SPMP_NoMatch
                         else if (lo <=_u addr) & (addr + width <=_u hi)
                         then    SPMP_Match
@@ -195,5 +195,10 @@ function init_spmp() -> unit = {
   spmp12cfg = update_A(spmp12cfg, spmpAddrMatchType_to_bits(OFF));
   spmp13cfg = update_A(spmp13cfg, spmpAddrMatchType_to_bits(OFF));
   spmp14cfg = update_A(spmp14cfg, spmpAddrMatchType_to_bits(OFF));
-  spmp15cfg = update_A(spmp15cfg, spmpAddrMatchType_to_bits(OFF))
+  spmp15cfg = update_A(spmp15cfg, spmpAddrMatchType_to_bits(OFF));
+
+  /* For backwards compatibility with software that is unaware of sPMP,
+    initialize sPMP to permit unprivileged access to all of memory. */
+  // spmpWriteCfgReg(2, 0b1000100000000000000000000000000000000000000000000000000000000000);
+  // spmpaddr15 = spmpWriteAddr(spmpaddr15, 0b1111111111111111111111111111111111111111111111111111111111111111)
 }
