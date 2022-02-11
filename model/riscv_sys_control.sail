@@ -120,29 +120,95 @@ function is_CSR_defined (csr : csreg, p : Privilege) -> bool =
     0x3BE => p == Machine, // pmpaddrE
     0x3BF => p == Machine, // pmpaddrF
 
-    // sPMP config registers
-    0x1A0 => p == Supervisor,                        // spmpcfg0
-    0x1A1 => p == Supervisor & (sizeof(xlen) == 32), // spmpcfg1
-    0x1A2 => p == Supervisor,                        // spmpcfg2
-    0x1A3 => p == Supervisor & (sizeof(xlen) == 32), // spmpcfg3
+    // SMPU config registers
+    0x1A0 => p == Supervisor,                        // smpucfg0
+    0x1A1 => p == Supervisor & (sizeof(xlen) == 32), // smpucfg1
+    0x1A2 => p == Supervisor,                        // smpucfg2
+    0x1A3 => p == Supervisor & (sizeof(xlen) == 32), // smpucfg3
+    0x1A4 => p == Supervisor,                        // smpucfg4
+    0x1A5 => p == Supervisor & (sizeof(xlen) == 32), // smpucfg5
+    0x1A6 => p == Supervisor,                        // smpucfg6
+    0x1A7 => p == Supervisor & (sizeof(xlen) == 32), // smpucfg7
+    0x1A8 => p == Supervisor,                        // smpucfg8
+    0x1A9 => p == Supervisor & (sizeof(xlen) == 32), // smpucfg9
+    0x1AA => p == Supervisor,                        // smpucfg10
+    0x1AB => p == Supervisor & (sizeof(xlen) == 32), // smpucfg11
+    0x1AC => p == Supervisor,                        // smpucfg12
+    0x1AD => p == Supervisor & (sizeof(xlen) == 32), // smpucfg13
+    0x1AE => p == Supervisor,                        // smpucfg14
+    0x1AF => p == Supervisor & (sizeof(xlen) == 32), // smpucfg15
 
-    // sPMP address registers
-    0x1B0 => p == Supervisor, // spmpaddr0
-    0x1B1 => p == Supervisor, // spmpaddr1
-    0x1B2 => p == Supervisor, // spmpaddr2
-    0x1B3 => p == Supervisor, // spmpaddr3
-    0x1B4 => p == Supervisor, // spmpaddr4
-    0x1B5 => p == Supervisor, // spmpaddr5
-    0x1B6 => p == Supervisor, // spmpaddr6
-    0x1B7 => p == Supervisor, // spmpaddr7
-    0x1B8 => p == Supervisor, // spmpaddr8
-    0x1B9 => p == Supervisor, // spmpaddr9
-    0x1BA => p == Supervisor, // spmpaddrA
-    0x1BB => p == Supervisor, // spmpaddrB
-    0x1BC => p == Supervisor, // spmpaddrC
-    0x1BD => p == Supervisor, // spmpaddrD
-    0x1BE => p == Supervisor, // spmpaddrE
-    0x1BF => p == Supervisor, // spmpaddrF
+    // SMPU address registers
+    0x1B0 => p == Supervisor, // smpuaddr0
+    0x1B1 => p == Supervisor, // smpuaddr1
+    0x1B2 => p == Supervisor, // smpuaddr2
+    0x1B3 => p == Supervisor, // smpuaddr3
+    0x1B4 => p == Supervisor, // smpuaddr4
+    0x1B5 => p == Supervisor, // smpuaddr5
+    0x1B6 => p == Supervisor, // smpuaddr6
+    0x1B7 => p == Supervisor, // smpuaddr7
+    0x1B8 => p == Supervisor, // smpuaddr8
+    0x1B9 => p == Supervisor, // smpuaddr9
+    0x1BA => p == Supervisor, // smpuaddrA
+    0x1BB => p == Supervisor, // smpuaddrB
+    0x1BC => p == Supervisor, // smpuaddrC
+    0x1BD => p == Supervisor, // smpuaddrD
+    0x1BE => p == Supervisor, // smpuaddrE
+    0x1BF => p == Supervisor, // smpuaddrF
+    0x1BA => p == Supervisor, // smpuaddr10
+    0x1BB => p == Supervisor, // smpuaddr11
+    0x1BC => p == Supervisor, // smpuaddr12
+    0x1BD => p == Supervisor, // smpuaddr13
+    0x1BE => p == Supervisor, // smpuaddr14
+    0x1BF => p == Supervisor, // smpuaddr15
+    0x1C0 => p == Supervisor, // smpuaddr16
+    0x1C1 => p == Supervisor, // smpuaddr17
+    0x1C2 => p == Supervisor, // smpuaddr18
+    0x1C3 => p == Supervisor, // smpuaddr19
+    0x1C4 => p == Supervisor, // smpuaddr20
+    0x1C5 => p == Supervisor, // smpuaddr21
+    0x1C6 => p == Supervisor, // smpuaddr22
+    0x1C7 => p == Supervisor, // smpuaddr23
+    0x1C8 => p == Supervisor, // smpuaddr24
+    0x1C9 => p == Supervisor, // smpuaddr25
+    0x1CA => p == Supervisor, // smpuaddr26
+    0x1CB => p == Supervisor, // smpuaddr27
+    0x1CC => p == Supervisor, // smpuaddr28
+    0x1CD => p == Supervisor, // smpuaddr29
+    0x1CE => p == Supervisor, // smpuaddr30
+    0x1CF => p == Supervisor, // smpuaddr31
+    0x1D0 => p == Supervisor, // smpuaddr32
+    0x1D1 => p == Supervisor, // smpuaddr33
+    0x1D2 => p == Supervisor, // smpuaddr34
+    0x1D3 => p == Supervisor, // smpuaddr35
+    0x1D4 => p == Supervisor, // smpuaddr36
+    0x1D5 => p == Supervisor, // smpuaddr37
+    0x1D6 => p == Supervisor, // smpuaddr38
+    0x1D7 => p == Supervisor, // smpuaddr39
+    0x1D8 => p == Supervisor, // smpuaddr40
+    0x1D9 => p == Supervisor, // smpuaddr41
+    0x1DA => p == Supervisor, // smpuaddr42
+    0x1DB => p == Supervisor, // smpuaddr43
+    0x1DC => p == Supervisor, // smpuaddr44
+    0x1DD => p == Supervisor, // smpuaddr45
+    0x1DE => p == Supervisor, // smpuaddr46
+    0x1DF => p == Supervisor, // smpuaddr47
+    0x1E0 => p == Supervisor, // smpuaddr48
+    0x1E1 => p == Supervisor, // smpuaddr49
+    0x1E2 => p == Supervisor, // smpuaddr50
+    0x1E3 => p == Supervisor, // smpuaddr51
+    0x1E4 => p == Supervisor, // smpuaddr52
+    0x1E5 => p == Supervisor, // smpuaddr53
+    0x1E6 => p == Supervisor, // smpuaddr54
+    0x1E7 => p == Supervisor, // smpuaddr55
+    0x1E8 => p == Supervisor, // smpuaddr56
+    0x1E9 => p == Supervisor, // smpuaddr57
+    0x1EA => p == Supervisor, // smpuaddr58
+    0x1EB => p == Supervisor, // smpuaddr59
+    0x1EC => p == Supervisor, // smpuaddr60
+    0x1ED => p == Supervisor, // smpuaddr61
+    0x1EE => p == Supervisor, // smpuaddr62
+    0x1EF => p == Supervisor, // smpuaddr63
 
     /* counters */
     0xB00 => p == Machine, // mcycle
@@ -621,7 +687,7 @@ function init_sys() -> unit = {
   minstret_written   = false;
 
   init_pmp();
-  init_spmp();
+  init_smpu();
 
   // log compatibility with spike
   if   get_config_print_reg()

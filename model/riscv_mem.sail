@@ -90,8 +90,9 @@
  *   mem_write_value_priv - uses a default value for metadata
  *   mem_write_value      - both of the above partial applications
  *
- * The internal implementation first performs a PMP check (if PMP is
- * enabled), and then dispatches to MMIO regions or physical memory as
+ * The internal implementation first performs a SMPU check (if SMPU is
+ * enabled), and then performs a PMP check (if PMP is enabled), 
+ * finally dispatches to MMIO regions or physical memory as
  * per the platform memory map.
  */
 
@@ -140,30 +141,30 @@ function checked_mem_read forall 'n, 0 < 'n <= max_mem_access . (t : AccessType(
     _          => MemException(E_SAMO_Access_Fault())
   }
 
-/* sPMP checks if enabled */
-function spmp_mem_read forall 'n, 0 < 'n <= max_mem_access . (t : AccessType(ext_access_type), paddr : xlenbits, width : atom('n), aq : bool, rl : bool, res: bool, meta : bool) -> MemoryOpResult((bits(8 * 'n), mem_meta)) =
-  if (~ (plat_enable_spmp()))
+/* PMP checks if enabled */
+function pmp_mem_read forall 'n, 0 < 'n <= max_mem_access . (t : AccessType(ext_access_type), p : Privilege, paddr : xlenbits, width : atom('n), aq : bool, rl : bool, res: bool, meta : bool) -> MemoryOpResult((bits(8 * 'n), mem_meta)) =
+  if (~ (plat_enable_pmp()))
   then checked_mem_read(t, paddr, width, aq, rl, res, meta)
   else {
-    match spmpCheck(paddr, width, t, effectivePrivilege(t, mstatus, cur_privilege)) {
+    match pmpCheck(paddr, width, t, p) {
       None()  => checked_mem_read(t, paddr, width, aq, rl, res, meta),
       Some(e) => MemException(e)
     }
   }
 
-/* PMP checks if enabled */
-function pmp_mem_read forall 'n, 0 < 'n <= max_mem_access . (t : AccessType(ext_access_type), paddr : xlenbits, width : atom('n), aq : bool, rl : bool, res: bool, meta : bool) -> MemoryOpResult((bits(8 * 'n), mem_meta)) =
-  if   ((~ (plat_enable_pmp())) & (~ (plat_enable_spmp())))
+/* SMPU checks if enabled. SMPU checks are performed before PMP if enabled. */
+function smpu_mem_read forall 'n, 0 < 'n <= max_mem_access . (t : AccessType(ext_access_type), p : Privilege, paddr : xlenbits, width : atom('n), aq : bool, rl : bool, res: bool, meta : bool) -> MemoryOpResult((bits(8 * 'n), mem_meta)) =
+  if   ((~ (plat_enable_pmp())) & (~ (plat_enable_smpu())))
   then checked_mem_read(t, paddr, width, aq, rl, res, meta)
   else {
-    if (plat_enable_pmp())
+    if (plat_enable_smpu())
     then {
-      match pmpCheck(paddr, width, t, effectivePrivilege(t, mstatus, cur_privilege)) {
-        None()  => spmp_mem_read(t, paddr, width, aq, rl, res, meta),
+      match smpuCheck(paddr, width, t, p) {
+        None()  => pmp_mem_read(t, p, paddr, width, aq, rl, res, meta),
         Some(e) => MemException(e)
       }
     }
-    else spmp_mem_read(t, paddr, width, aq, rl, res, meta)
+    else pmp_mem_read(t, p, paddr, width, aq, rl, res, meta)
   }
 
 /* Atomic accesses can be done to MMIO regions, e.g. in kernel access to device registers. */
@@ -208,7 +209,7 @@ function mem_read_priv_meta (typ, priv, paddr, width, aq, rl, res, meta) = {
     else match (aq, rl, res) {
       (false, true,  false) => throw(Error_not_implemented("load.rl")),
       (false, true,  true)  => throw(Error_not_implemented("lr.rl")),
-      (_, _, _)             => pmp_mem_read(typ, priv, paddr, width, aq, rl, res, meta)
+      (_, _, _)             => smpu_mem_read(typ, priv, paddr, width, aq, rl, res, meta)
     };
   rvfi_read(paddr, width, result);
   result
@@ -280,31 +281,30 @@ function checked_mem_write forall 'n, 0 < 'n <= max_mem_access . (wk : write_kin
   }  
   else MemException(E_SAMO_Access_Fault())
 
-/* sPMP checks if enabled */
-function spmp_mem_write forall 'n, 0 < 'n <= max_mem_access . (wk: write_kind, paddr : xlenbits, width : atom('n), data: bits(8 * 'n), typ: AccessType(ext_access_type), meta: mem_meta) -> MemoryOpResult(bool) =
-  if (~ (plat_enable_spmp()))
+/* PMP checks if enabled */
+function pmp_mem_write forall 'n, 0 < 'n <= max_mem_access . (wk: write_kind, paddr : xlenbits, width : atom('n), data: bits(8 * 'n), typ: AccessType(ext_access_type), priv: Privilege, meta: mem_meta) -> MemoryOpResult(bool) =
+  if (~ (plat_enable_pmp()))
   then checked_mem_write(wk, paddr, width, data, meta)
   else {
-    match spmpCheck(paddr, width, typ, effectivePrivilege(typ, mstatus, cur_privilege)) {
+    match pmpCheck(paddr, width, typ, priv) {
       None()  => checked_mem_write(wk, paddr, width, data, meta),
       Some(e) => MemException(e)
     }
   }
 
-/* PMP checks if enabled */
-function pmp_mem_write forall 'n, 0 < 'n <= max_mem_access . (wk: write_kind, paddr : xlenbits, width : atom('n), data: bits(8 * 'n), ext_acc: ext_access_type, meta: mem_meta) -> MemoryOpResult(bool) = {
-  let typ : AccessType(ext_access_type) = Write(ext_acc);
-  if   ((~ (plat_enable_pmp())) & (~ (plat_enable_spmp())))
+/* SMPU checks if enabled. SMPU checks are performed before PMP if enabled. */
+function smpu_mem_write forall 'n, 0 < 'n <= max_mem_access . (wk: write_kind, paddr : xlenbits, width : atom('n), data: bits(8 * 'n), typ: AccessType(ext_access_type), priv: Privilege, meta: mem_meta) -> MemoryOpResult(bool) = {
+  if   ((~ (plat_enable_pmp())) & (~ (plat_enable_smpu())))
   then checked_mem_write(wk, paddr, width, data, meta)
   else {
-    if (plat_enable_pmp())
+    if (plat_enable_smpu())
     then {
-      match pmpCheck(paddr, width, typ, effectivePrivilege(typ, mstatus, cur_privilege)) {
-        None()  => spmp_mem_write(wk, paddr, width, data, typ, meta),
+      match smpuCheck(paddr, width, typ, priv) {
+        None()  => pmp_mem_write(wk, paddr, width, data, typ, priv, meta),
         Some(e) => MemException(e)
       }
     }
-    else spmp_mem_write(wk, paddr, width, data, typ, meta)
+    else pmp_mem_write(wk, paddr, width, data, typ, priv, meta)
   }
 }
 
@@ -332,7 +332,7 @@ function mem_write_value_priv_meta (paddr, width, value, typ, priv, meta, aq, rl
       (true,  false, false) => throw(Error_not_implemented("store.aq")),
       (true,  false, true)  => throw(Error_not_implemented("sc.aq"))
     };
-    pmp_mem_write(wk, paddr, width, value, typ, priv, meta);
+    smpu_mem_write(wk, paddr, width, value, typ, priv, meta);
   }
 }
 

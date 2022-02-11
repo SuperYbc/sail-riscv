@@ -96,11 +96,11 @@ val plat_enable_pmp = {ocaml: "Platform.enable_pmp",
                        c: "plat_enable_pmp",
                        lem: "plat_enable_pmp"} : unit -> bool
 
-/* whether the platform supports sPMP configurations */
-val plat_enable_spmp = {ocaml: "Platform.enable_spmp",
-                       interpreter: "Platform.enable_spmp",
-                       c: "plat_enable_spmp",
-                       lem: "plat_enable_spmp"} : unit -> bool
+/* whether the platform supports SMPU configurations */
+val plat_enable_smpu = {ocaml: "Platform.enable_smpu",
+                       interpreter: "Platform.enable_smpu",
+                       c: "plat_enable_smpu",
+                       lem: "plat_enable_smpu"} : unit -> bool
 
 /* whether the MMU should update dirty bits in PTEs */
 val plat_enable_dirty_update = {ocaml: "Platform.enable_dirty_update",

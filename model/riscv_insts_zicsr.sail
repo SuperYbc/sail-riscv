@@ -110,11 +110,22 @@ function readCSR csr : csreg -> xlenbits = {
     (0x3A2,  _) => pmpReadCfgReg(2),           // pmpcfg2
     (0x3A3, 32) => pmpReadCfgReg(3),           // pmpcfg3
 
-    (0x1A0,  _) => spmpReadCfgReg(0),           // spmpcfg0
-    (0x1A1, 32) => spmpReadCfgReg(1),           // spmpcfg1
-    (0x1A2,  _) => spmpReadCfgReg(2),           // spmpcfg2
-    (0x1A3, 32) => spmpReadCfgReg(3),           // spmpcfg3
-
+    (0x1A0,  _) => smpuReadCfgReg(0),          // smpucfg0
+    (0x1A1, 32) => smpuReadCfgReg(1),          // smpucfg1
+    (0x1A2,  _) => smpuReadCfgReg(2),          // smpucfg2
+    (0x1A3, 32) => smpuReadCfgReg(3),          // smpucfg3
+    (0x1A4,  _) => smpuReadCfgReg(4),          // smpucfg4
+    (0x1A5, 32) => smpuReadCfgReg(5),          // smpucfg5
+    (0x1A6,  _) => smpuReadCfgReg(6),          // smpucfg6
+    (0x1A7, 32) => smpuReadCfgReg(7),          // smpucfg7
+    (0x1A8,  _) => smpuReadCfgReg(8),          // smpucfg8
+    (0x1A9, 32) => smpuReadCfgReg(9),          // smpucfg9
+    (0x1AA,  _) => smpuReadCfgReg(10),         // smpucfg10
+    (0x1AB, 32) => smpuReadCfgReg(11),         // smpucfg11
+    (0x1AC,  _) => smpuReadCfgReg(12),         // smpucfg12
+    (0x1AD, 32) => smpuReadCfgReg(13),         // smpucfg13
+    (0x1AE,  _) => smpuReadCfgReg(14),         // smpucfg14
+    (0x1AF, 32) => smpuReadCfgReg(15),         // smpucfg15
     (0x3B0,  _) => pmpaddr0,
     (0x3B1,  _) => pmpaddr1,
     (0x3B2,  _) => pmpaddr2,
@@ -132,22 +143,70 @@ function readCSR csr : csreg -> xlenbits = {
     (0x3BE,  _) => pmpaddr14,
     (0x3BF,  _) => pmpaddr15,
 
-    (0x1B0,  _) => spmpaddr0,
-    (0x1B1,  _) => spmpaddr1,
-    (0x1B2,  _) => spmpaddr2,
-    (0x1B3,  _) => spmpaddr3,
-    (0x1B4,  _) => spmpaddr4,
-    (0x1B5,  _) => spmpaddr5,
-    (0x1B6,  _) => spmpaddr6,
-    (0x1B7,  _) => spmpaddr7,
-    (0x1B8,  _) => spmpaddr8,
-    (0x1B9,  _) => spmpaddr9,
-    (0x1BA,  _) => spmpaddr10,
-    (0x1BB,  _) => spmpaddr11,
-    (0x1BC,  _) => spmpaddr12,
-    (0x1BD,  _) => spmpaddr13,
-    (0x1BE,  _) => spmpaddr14,
-    (0x1BF,  _) => spmpaddr15,
+    (0x1B0,  _) => smpuaddr0,
+    (0x1B1,  _) => smpuaddr1,
+    (0x1B2,  _) => smpuaddr2,
+    (0x1B3,  _) => smpuaddr3,
+    (0x1B4,  _) => smpuaddr4,
+    (0x1B5,  _) => smpuaddr5,
+    (0x1B6,  _) => smpuaddr6,
+    (0x1B7,  _) => smpuaddr7,
+    (0x1B8,  _) => smpuaddr8,
+    (0x1B9,  _) => smpuaddr9,
+    (0x1BA,  _) => smpuaddr10,
+    (0x1BB,  _) => smpuaddr11,
+    (0x1BC,  _) => smpuaddr12,
+    (0x1BD,  _) => smpuaddr13,
+    (0x1BE,  _) => smpuaddr14,
+    (0x1BF,  _) => smpuaddr15,
+    (0x1C0,  _) => smpuaddr16,
+    (0x1C1,  _) => smpuaddr17,
+    (0x1C2,  _) => smpuaddr18,
+    (0x1C3,  _) => smpuaddr19,
+    (0x1C4,  _) => smpuaddr20,
+    (0x1C5,  _) => smpuaddr21,
+    (0x1C6,  _) => smpuaddr22,
+    (0x1C7,  _) => smpuaddr23,
+    (0x1C8,  _) => smpuaddr24,
+    (0x1C9,  _) => smpuaddr25,
+    (0x1CA,  _) => smpuaddr26,
+    (0x1CB,  _) => smpuaddr27,
+    (0x1CC,  _) => smpuaddr28,
+    (0x1CD,  _) => smpuaddr29,
+    (0x1CE,  _) => smpuaddr30,
+    (0x1CF,  _) => smpuaddr31,
+    (0x1D0,  _) => smpuaddr32,
+    (0x1D1,  _) => smpuaddr33,
+    (0x1D2,  _) => smpuaddr34,
+    (0x1D3,  _) => smpuaddr35,
+    (0x1D4,  _) => smpuaddr36,
+    (0x1D5,  _) => smpuaddr37,
+    (0x1D6,  _) => smpuaddr38,
+    (0x1D7,  _) => smpuaddr39,
+    (0x1D8,  _) => smpuaddr40,
+    (0x1D9,  _) => smpuaddr41,
+    (0x1DA,  _) => smpuaddr42,
+    (0x1DB,  _) => smpuaddr43,
+    (0x1DC,  _) => smpuaddr44,
+    (0x1DD,  _) => smpuaddr45,
+    (0x1DE,  _) => smpuaddr46,
+    (0x1DF,  _) => smpuaddr47,
+    (0x1E0,  _) => smpuaddr48,
+    (0x1E1,  _) => smpuaddr49,
+    (0x1E2,  _) => smpuaddr50,
+    (0x1E3,  _) => smpuaddr51,
+    (0x1E4,  _) => smpuaddr52,
+    (0x1E5,  _) => smpuaddr53,
+    (0x1E6,  _) => smpuaddr54,
+    (0x1E7,  _) => smpuaddr55,
+    (0x1E8,  _) => smpuaddr56,
+    (0x1E9,  _) => smpuaddr57,
+    (0x1EA,  _) => smpuaddr58,
+    (0x1EB,  _) => smpuaddr59,
+    (0x1EC,  _) => smpuaddr60,
+    (0x1ED,  _) => smpuaddr61,
+    (0x1EE,  _) => smpuaddr62,
+    (0x1EF,  _) => smpuaddr63,
 
     /* machine mode counters */
     (0xB00,  _) => mcycle[(sizeof(xlen) - 1) .. 0],
@@ -237,27 +296,87 @@ function writeCSR (csr : csreg, value : xlenbits) -> unit = {
     (0x3BE,  _) => { pmpaddr14 = pmpWriteAddr(pmpLocked(pmp14cfg), pmpTORLocked(pmp15cfg), pmpaddr14, value); Some(pmpaddr14) },
     (0x3BF,  _) => { pmpaddr15 = pmpWriteAddr(pmpLocked(pmp15cfg), false,                  pmpaddr15, value); Some(pmpaddr15) },
 
-    (0x1A0,  _) => { spmpWriteCfgReg(0, value); Some(spmpReadCfgReg(0)) },  // spmpcfg0
-    (0x1A1, 32) => { spmpWriteCfgReg(1, value); Some(spmpReadCfgReg(1)) },  // spmpcfg1
-    (0x1A2,  _) => { spmpWriteCfgReg(2, value); Some(spmpReadCfgReg(2)) },  // spmpcfg2
-    (0x1A3, 32) => { spmpWriteCfgReg(3, value); Some(spmpReadCfgReg(3)) },  // spmpcfg3
+    (0x1A0,  _) => { smpuWriteCfgReg(0, value); Some(smpuReadCfgReg(0)) },  // smpucfg0
+    (0x1A1, 32) => { smpuWriteCfgReg(1, value); Some(smpuReadCfgReg(1)) },  // smpucfg1
+    (0x1A2,  _) => { smpuWriteCfgReg(2, value); Some(smpuReadCfgReg(2)) },  // smpucfg2
+    (0x1A3, 32) => { smpuWriteCfgReg(3, value); Some(smpuReadCfgReg(3)) },  // smpucfg3
+    (0x1A4,  _) => { smpuWriteCfgReg(4, value); Some(smpuReadCfgReg(4)) },  // smpucfg4
+    (0x1A5, 32) => { smpuWriteCfgReg(5, value); Some(smpuReadCfgReg(5)) },  // smpucfg5
+    (0x1A6,  _) => { smpuWriteCfgReg(6, value); Some(smpuReadCfgReg(6)) },  // smpucfg6
+    (0x1A7, 32) => { smpuWriteCfgReg(7, value); Some(smpuReadCfgReg(7)) },  // smpucfg7
+    (0x1A8,  _) => { smpuWriteCfgReg(8, value); Some(smpuReadCfgReg(8)) },  // smpucfg8
+    (0x1A9, 32) => { smpuWriteCfgReg(9, value); Some(smpuReadCfgReg(9)) },  // smpucfg9
+    (0x1AA,  _) => { smpuWriteCfgReg(10, value); Some(smpuReadCfgReg(10)) },  // smpucfg10
+    (0x1AB, 32) => { smpuWriteCfgReg(11, value); Some(smpuReadCfgReg(11)) },  // smpucfg11
+    (0x1AC,  _) => { smpuWriteCfgReg(12, value); Some(smpuReadCfgReg(12)) },  // smpucfg12
+    (0x1AD, 32) => { smpuWriteCfgReg(13, value); Some(smpuReadCfgReg(13)) },  // smpucfg13
+    (0x1AE,  _) => { smpuWriteCfgReg(14, value); Some(smpuReadCfgReg(14)) },  // smpucfg14
+    (0x1AF, 32) => { smpuWriteCfgReg(15, value); Some(smpuReadCfgReg(15)) },  // smpucfg15
 
-    (0x1B0,  _) => { spmpaddr0  = spmpWriteAddr(spmpaddr0,  value); Some(spmpaddr0) },
-    (0x1B1,  _) => { spmpaddr1  = spmpWriteAddr(spmpaddr1,  value); Some(spmpaddr1) },
-    (0x1B2,  _) => { spmpaddr2  = spmpWriteAddr(spmpaddr2,  value); Some(spmpaddr2) },
-    (0x1B3,  _) => { spmpaddr3  = spmpWriteAddr(spmpaddr3,  value); Some(spmpaddr3) },
-    (0x1B4,  _) => { spmpaddr4  = spmpWriteAddr(spmpaddr4,  value); Some(spmpaddr4) },
-    (0x1B5,  _) => { spmpaddr5  = spmpWriteAddr(spmpaddr5,  value); Some(spmpaddr5) },
-    (0x1B6,  _) => { spmpaddr6  = spmpWriteAddr(spmpaddr6,  value); Some(spmpaddr6) },
-    (0x1B7,  _) => { spmpaddr7  = spmpWriteAddr(spmpaddr7,  value); Some(spmpaddr7) },
-    (0x1B8,  _) => { spmpaddr8  = spmpWriteAddr(spmpaddr8,  value); Some(spmpaddr8) },
-    (0x1B9,  _) => { spmpaddr9  = spmpWriteAddr(spmpaddr9,  value); Some(spmpaddr9) },
-    (0x1BA,  _) => { spmpaddr10 = spmpWriteAddr(spmpaddr10, value); Some(spmpaddr10) },
-    (0x1BB,  _) => { spmpaddr11 = spmpWriteAddr(spmpaddr11, value); Some(spmpaddr11) },
-    (0x1BC,  _) => { spmpaddr12 = spmpWriteAddr(spmpaddr12, value); Some(spmpaddr12) },
-    (0x1BD,  _) => { spmpaddr13 = spmpWriteAddr(spmpaddr13, value); Some(spmpaddr13) },
-    (0x1BE,  _) => { spmpaddr14 = spmpWriteAddr(spmpaddr14, value); Some(spmpaddr14) },
-    (0x1BF,  _) => { spmpaddr15 = spmpWriteAddr(spmpaddr15, value); Some(spmpaddr15) },
+    (0x1B0,  _) => { smpuaddr0  = smpuWriteAddr(smpuaddr0,  value); Some(smpuaddr0) },
+    (0x1B1,  _) => { smpuaddr1  = smpuWriteAddr(smpuaddr1,  value); Some(smpuaddr1) },
+    (0x1B2,  _) => { smpuaddr2  = smpuWriteAddr(smpuaddr2,  value); Some(smpuaddr2) },
+    (0x1B3,  _) => { smpuaddr3  = smpuWriteAddr(smpuaddr3,  value); Some(smpuaddr3) },
+    (0x1B4,  _) => { smpuaddr4  = smpuWriteAddr(smpuaddr4,  value); Some(smpuaddr4) },
+    (0x1B5,  _) => { smpuaddr5  = smpuWriteAddr(smpuaddr5,  value); Some(smpuaddr5) },
+    (0x1B6,  _) => { smpuaddr6  = smpuWriteAddr(smpuaddr6,  value); Some(smpuaddr6) },
+    (0x1B7,  _) => { smpuaddr7  = smpuWriteAddr(smpuaddr7,  value); Some(smpuaddr7) },
+    (0x1B8,  _) => { smpuaddr8  = smpuWriteAddr(smpuaddr8,  value); Some(smpuaddr8) },
+    (0x1B9,  _) => { smpuaddr9  = smpuWriteAddr(smpuaddr9,  value); Some(smpuaddr9) },
+    (0x1BA,  _) => { smpuaddr10 = smpuWriteAddr(smpuaddr10, value); Some(smpuaddr10) },
+    (0x1BB,  _) => { smpuaddr11 = smpuWriteAddr(smpuaddr11, value); Some(smpuaddr11) },
+    (0x1BC,  _) => { smpuaddr12 = smpuWriteAddr(smpuaddr12, value); Some(smpuaddr12) },
+    (0x1BD,  _) => { smpuaddr13 = smpuWriteAddr(smpuaddr13, value); Some(smpuaddr13) },
+    (0x1BE,  _) => { smpuaddr14 = smpuWriteAddr(smpuaddr14, value); Some(smpuaddr14) },
+    (0x1BF,  _) => { smpuaddr15 = smpuWriteAddr(smpuaddr15, value); Some(smpuaddr15) },
+    (0x1C0,  _) => { smpuaddr16 = smpuWriteAddr(smpuaddr16, value); Some(smpuaddr16) },
+    (0x1C1,  _) => { smpuaddr17 = smpuWriteAddr(smpuaddr17, value); Some(smpuaddr17) },
+    (0x1C2,  _) => { smpuaddr18 = smpuWriteAddr(smpuaddr18, value); Some(smpuaddr18) },
+    (0x1C3,  _) => { smpuaddr19 = smpuWriteAddr(smpuaddr19, value); Some(smpuaddr19) },
+    (0x1C4,  _) => { smpuaddr20 = smpuWriteAddr(smpuaddr20, value); Some(smpuaddr20) },
+    (0x1C5,  _) => { smpuaddr21 = smpuWriteAddr(smpuaddr21, value); Some(smpuaddr21) },
+    (0x1C6,  _) => { smpuaddr22 = smpuWriteAddr(smpuaddr22, value); Some(smpuaddr22) },
+    (0x1C7,  _) => { smpuaddr23 = smpuWriteAddr(smpuaddr23, value); Some(smpuaddr23) },
+    (0x1C8,  _) => { smpuaddr24 = smpuWriteAddr(smpuaddr24, value); Some(smpuaddr24) },
+    (0x1C9,  _) => { smpuaddr25 = smpuWriteAddr(smpuaddr25, value); Some(smpuaddr25) },
+    (0x1CA,  _) => { smpuaddr26 = smpuWriteAddr(smpuaddr26, value); Some(smpuaddr26) },
+    (0x1CB,  _) => { smpuaddr27 = smpuWriteAddr(smpuaddr27, value); Some(smpuaddr27) },
+    (0x1CC,  _) => { smpuaddr28 = smpuWriteAddr(smpuaddr28, value); Some(smpuaddr28) },
+    (0x1CD,  _) => { smpuaddr29 = smpuWriteAddr(smpuaddr29, value); Some(smpuaddr29) },
+    (0x1CE,  _) => { smpuaddr30 = smpuWriteAddr(smpuaddr30, value); Some(smpuaddr30) },
+    (0x1CF,  _) => { smpuaddr31 = smpuWriteAddr(smpuaddr31, value); Some(smpuaddr31) },
+    (0x1D0,  _) => { smpuaddr32 = smpuWriteAddr(smpuaddr32, value); Some(smpuaddr32) },
+    (0x1D1,  _) => { smpuaddr33 = smpuWriteAddr(smpuaddr33, value); Some(smpuaddr33) },
+    (0x1D2,  _) => { smpuaddr34 = smpuWriteAddr(smpuaddr34, value); Some(smpuaddr34) },
+    (0x1D3,  _) => { smpuaddr35 = smpuWriteAddr(smpuaddr35, value); Some(smpuaddr35) },
+    (0x1D4,  _) => { smpuaddr36 = smpuWriteAddr(smpuaddr36, value); Some(smpuaddr36) },
+    (0x1D5,  _) => { smpuaddr37 = smpuWriteAddr(smpuaddr37, value); Some(smpuaddr37) },
+    (0x1D6,  _) => { smpuaddr38 = smpuWriteAddr(smpuaddr38, value); Some(smpuaddr38) },
+    (0x1D7,  _) => { smpuaddr39 = smpuWriteAddr(smpuaddr39, value); Some(smpuaddr39) },
+    (0x1D8,  _) => { smpuaddr40 = smpuWriteAddr(smpuaddr40, value); Some(smpuaddr40) },
+    (0x1D9,  _) => { smpuaddr41 = smpuWriteAddr(smpuaddr41, value); Some(smpuaddr41) },
+    (0x1DA,  _) => { smpuaddr42 = smpuWriteAddr(smpuaddr42, value); Some(smpuaddr42) },
+    (0x1DB,  _) => { smpuaddr43 = smpuWriteAddr(smpuaddr43, value); Some(smpuaddr43) },
+    (0x1DC,  _) => { smpuaddr44 = smpuWriteAddr(smpuaddr44, value); Some(smpuaddr44) },
+    (0x1DD,  _) => { smpuaddr45 = smpuWriteAddr(smpuaddr45, value); Some(smpuaddr45) },
+    (0x1DE,  _) => { smpuaddr46 = smpuWriteAddr(smpuaddr46, value); Some(smpuaddr46) },
+    (0x1DF,  _) => { smpuaddr47 = smpuWriteAddr(smpuaddr47, value); Some(smpuaddr47) },
+    (0x1E0,  _) => { smpuaddr48 = smpuWriteAddr(smpuaddr48, value); Some(smpuaddr48) },
+    (0x1E1,  _) => { smpuaddr49 = smpuWriteAddr(smpuaddr49, value); Some(smpuaddr49) },
+    (0x1E2,  _) => { smpuaddr50 = smpuWriteAddr(smpuaddr50, value); Some(smpuaddr50) },
+    (0x1E3,  _) => { smpuaddr51 = smpuWriteAddr(smpuaddr51, value); Some(smpuaddr51) },
+    (0x1E4,  _) => { smpuaddr52 = smpuWriteAddr(smpuaddr52, value); Some(smpuaddr52) },
+    (0x1E5,  _) => { smpuaddr53 = smpuWriteAddr(smpuaddr53, value); Some(smpuaddr53) },
+    (0x1E6,  _) => { smpuaddr54 = smpuWriteAddr(smpuaddr54, value); Some(smpuaddr54) },
+    (0x1E7,  _) => { smpuaddr55 = smpuWriteAddr(smpuaddr55, value); Some(smpuaddr55) },
+    (0x1E8,  _) => { smpuaddr56 = smpuWriteAddr(smpuaddr56, value); Some(smpuaddr56) },
+    (0x1E9,  _) => { smpuaddr57 = smpuWriteAddr(smpuaddr57, value); Some(smpuaddr57) },
+    (0x1EA,  _) => { smpuaddr58 = smpuWriteAddr(smpuaddr58, value); Some(smpuaddr58) },
+    (0x1EB,  _) => { smpuaddr59 = smpuWriteAddr(smpuaddr59, value); Some(smpuaddr59) },
+    (0x1EC,  _) => { smpuaddr60 = smpuWriteAddr(smpuaddr60, value); Some(smpuaddr60) },
+    (0x1ED,  _) => { smpuaddr61 = smpuWriteAddr(smpuaddr61, value); Some(smpuaddr61) },
+    (0x1EE,  _) => { smpuaddr62 = smpuWriteAddr(smpuaddr62, value); Some(smpuaddr62) },
+    (0x1EF,  _) => { smpuaddr63 = smpuWriteAddr(smpuaddr63, value); Some(smpuaddr63) },
 
     /* machine mode counters */
     (0xB00,  _) => { mcycle[(sizeof(xlen) - 1) .. 0] = value; Some(value) },
