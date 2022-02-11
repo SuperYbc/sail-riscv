@@ -67,7 +67,7 @@ PRELUDE = prelude.sail prelude_mapping.sail $(SAIL_XLEN) $(SAIL_FLEN) prelude_me
 
 SAIL_REGS_SRCS = riscv_reg_type.sail riscv_freg_type.sail riscv_regs.sail riscv_pc_access.sail riscv_sys_regs.sail
 SAIL_REGS_SRCS += riscv_pmp_regs.sail riscv_pmp_control.sail
-SAIL_REGS_SRCS += riscv_spmp_regs.sail riscv_spmp_control.sail
+SAIL_REGS_SRCS += riscv_smpu_regs.sail riscv_smpu_control.sail
 SAIL_REGS_SRCS += riscv_ext_regs.sail $(SAIL_CHECK_SRCS)
 
 SAIL_ARCH_SRCS = $(PRELUDE)
