@@ -8,7 +8,8 @@
 #define DEFAULT_RSTVEC     0x00001000
 
 extern bool rv_enable_pmp;
-extern bool rv_enable_spmp;
+extern bool rv_enable_smpu;
+extern bool rv_enable_zfinx;
 extern bool rv_enable_rvc;
 extern bool rv_enable_next;
 extern bool rv_enable_fdext;
@@ -22,6 +23,9 @@ extern uint64_t rv_ram_size;
 
 extern uint64_t rv_rom_base;
 extern uint64_t rv_rom_size;
+
+// Provides entropy for the scalar cryptography extension.
+extern uint64_t rv_16_random_bits(void);
 
 extern uint64_t rv_clint_base;
 extern uint64_t rv_clint_size;

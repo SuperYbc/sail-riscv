@@ -2,7 +2,7 @@ RISCV Sail Model
 ================
 
 This repository contains a formal specification of the RISC-V architecture, written in
-[Sail](https://www.cl.cam.ac.uk/~pes20/sail/) ([repo](https://github.com/rems-project/sail)).   It has been adopted by the RISC-V Foundation.
+[Sail](https://www.cl.cam.ac.uk/~pes20/sail/) ([repo](https://github.com/rems-project/sail)).   It has been adopted by the RISC-V Foundation.  As of 2021-08-24, the repo has been moved from <https://github.com/rems-project/sail-riscv> to <https://github.com/riscv/sail-riscv>.
 
 The model specifies
 assembly language formats of the instructions, the corresponding
@@ -51,19 +51,19 @@ concurrency semantics.
 <p>
 
 Sail is being used for multiple ISA descriptions, including
-essentially complete versions of the sequential behaviour of ARMv8-A
-(automatically derived from the authoritative ARM-internal
-specification, and released under a BSD Clear licence with ARM's
+essentially complete versions of the sequential behaviour of Armv8-A
+(automatically derived from the authoritative Arm-internal
+specification, and released under a BSD Clear licence with Arm's
 permission), RISC-V, MIPS, CHERI-RISC-V, and CHERI-MIPS; all these are complete
 enough to boot various operating systems.  There are also Sail models
 for smaller fragments of IBM POWER and x86.
 
 
 
-Example instruction specifications
+Example RISC-V instruction specifications
 ----------------------------------
 
-These are verbatim excerpts from the model file containing the base instructions, [riscv_insts_base.sail](https://github.com/rems-project/sail-riscv/blob/master/model/riscv_insts_base.sail), with a few comments added.
+These are verbatim excerpts from the model file containing the base instructions, [riscv_insts_base.sail](https://github.com/riscv/sail-riscv/blob/master/model/riscv_insts_base.sail), with a few comments added.
 
 ### ITYPE (or ADDI)
 ~~~~~
@@ -152,7 +152,7 @@ per-instruction tandem-verification.
 The C emulator, for the Linux boot, currently runs at approximately
 300 KIPS on an Intel i7-7700 (when detailed per-instruction tracing
 is disabled), and there are many opportunities for future optimisation
-(our Sail MIPS model runs at approximately 1 MIPS). This enables us to
+(the Sail MIPS model runs at approximately 1 MIPS). This enables one to
 boot Linux in about 4 minutes, and FreeBSD in about 2 minutes. Memory
 usage for the C emulator when booting Linux is approximately 140MB.
 
@@ -170,7 +170,7 @@ tables and as html-annotated versions of the model source.
 
 ### Use as test oracle in tandem verification
 
-For tandem verification of random instruction streams we support the
+For tandem verification of random instruction streams, the tools support the
 protocols used in [TestRIG](https://github.com/CTSRD-CHERI/TestRIG) to
 directly inject instructions into the C emulator and produce trace
 information in RVFI format.  This has been used for cross testing
@@ -192,31 +192,31 @@ The ISA model is integrated with the operational model of the RISC-V
 relaxed memory model, RVWMO (as described in an appendix of the [RISC-V
 user-level specification](https://github.com/riscv/riscv-isa-manual/releases/tag/draft-20181227-c6741cb)), which is one of the reference models used
 in the development of the RISC-V concurrency architecture; this is
-part of our [RMEM](http://www.cl.cam.ac.uk/users/pes20/rmem) tool.
+part of the [RMEM](http://www.cl.cam.ac.uk/users/pes20/rmem) tool.
 It is also integrated with the RISC-V axiomatic concurrency model
- as part of our [isla-axiomatic](https://isla-axiomatic.cl.cam.ac.uk/) tool.
+ as part of the [isla-axiomatic](https://isla-axiomatic.cl.cam.ac.uk/) tool.
 
 ### Concurrent testing
 
 
-As part of our concurrency architecture work, we have produced and
+As part of the University of Cambridge/ INRIA concurrency architecture work, those groups produced and
 released a library of approximately 7000 [litmus
 tests](https://github.com/litmus-tests/litmus-tests-riscv).  The
 operational and axiomatic RISC-V concurrency models are in sync for
 these tests, and they moreover agree with the corresponding ARM
 architected behaviour for the tests in common.
 
-We have also run these tests on RISC-V hardware, on a SiFive RISC-V
+Those tests have also been run on RISC-V hardware, on a SiFive RISC-V
 FU540 multicore proto board (Freedom Unleashed), kindly on loan from
-Imperas. To date, we see only sequentially consistent behaviour there.
+Imperas. To date, only sequentially consistent behaviour was observed there.
 
 
 
 Use in test generation
 ----------------------
 
-Our OCaml backend can produce QuickCheck-style random generators for
-types in Sail specifications, which we have used to produce random
+The Sail OCaml backend can produce QuickCheck-style random generators for
+types in Sail specifications, which have been used to produce random
 instructions sequences for testing.  The generation of individual
 types can be overridden by the developer to, for example, remove
 implementation-specific instructions or introduce register biasing.
@@ -226,21 +226,21 @@ implementation-specific instructions or introduce register biasing.
 Generating theorem-prover definitions
 --------------------------------------
 
-With Sail we aim to support the generation of idiomatic theorem prover
-definitions across multiple tools. At present we support Isabelle,
-HOL4 and Coq, and provide snapshots of the generated theorem prover
+Sail aims to support the generation of idiomatic theorem prover
+definitions across multiple tools. At present it supports Isabelle,
+HOL4 and Coq, and the `prover_snapshots` directory provides snapshots of the generated theorem prover
 definitions.
 
-Our theorem-prover translation can target multiple monads for
+These theorem-prover translations can target multiple monads for
 different purposes. The first is a state monad with nondeterminism and
 exceptions, suitable for reasoning in a sequential setting, assuming
 that effectful expressions are executed without interruptions and with
 exclusive access to the state.
 
 For reasoning about concurrency, where instructions execute
-out-of-order, speculatively, and non-atomically, we provide a free
+out-of-order, speculatively, and non-atomically, there is a free
 monad over an effect datatype of memory actions. This monad is also
-used as part of our aforementioned concurrency support via the RMEM
+used as part of the aforementioned concurrency support via the RMEM
 tool.
 
 
@@ -277,9 +277,7 @@ Getting started
 
 ### Building the model
 
-Install [Sail](https://github.com/rems-project/sail/), either via opam
-or by building Sail from source and setting `SAIL_DIR` in your
-environment pointing to its top-level directory.  Then:
+Install [Sail](https://github.com/rems-project/sail/) [using opam](https://github.com/rems-project/sail/blob/sail2/INSTALL.md) then:
 
 ```
 $ make
@@ -356,7 +354,10 @@ There is also (as yet unmerged) support for [integration with riscv-config](http
 For booting operating system images, see the information under the
 [os-boot/](os-boot/) subdirectory.
 
+### Using development versions of Sail
 
+Rarely, the version of Sail packaged in opam may not meet your needs. This could happen if you need a bug fix or new feature not yet in the released Sail version, or you are actively working on Sail. In this case you can tell the `sail-riscv` `Makefile` to use a local copy of Sail by setting `SAIL_DIR` to the root of a checkout of the Sail repo when you invoke `make`. Alternatively, you can use `opam pin` to install Sail from a local checkout of the Sail repo as described in the Sail installation instructions.
+                        
 Licence
 -------
 
@@ -367,16 +368,21 @@ Authors
 -------
 
  Prashanth Mundkur, SRI International;
- Rishiyur Nikhil (Bluespec Inc.); 
+ Rishiyur S. Nikhil (Bluespec Inc.); 
  Jon French, University of Cambridge;
  Brian Campbell, University of Edinburgh;
- Robert Norton, University of Cambridge;
+ Robert Norton-Wright, University of Cambridge and Microsoft;
  Alasdair Armstrong, University of Cambridge;
  Thomas Bauereiss, University of Cambridge;
  Shaked Flur, University of Cambridge;
- Christopher Pulte, University of Cambridge
- Peter Sewell, University of Cambridge
-
+ Christopher Pulte, University of Cambridge;
+ Peter Sewell, University of Cambridge;
+ Alexander Richardson, University of Cambridge;
+ Hesham Almatary, University of Cambridge;
+ Jessica Clarke, University of Cambridge;
+ Nathaniel Wesley Filardo, Microsoft;
+ Peter Rugg, University of Cambridge;
+ Scott Johnson, Aril Computer Corp.
 
 Funding
 -------
@@ -394,4 +400,4 @@ SSITH research programme.
 
 This project has received funding from the European Research Council
 (ERC) under the European Union’s Horizon 2020 research and innovation
-programme (grant agreement No 789108).
+programme (grant agreement 789108, ELVER).

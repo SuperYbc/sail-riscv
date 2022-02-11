@@ -1,3 +1,71 @@
+/*=======================================================================================*/
+/*  RISCV Sail Model                                                                     */
+/*                                                                                       */
+/*  This Sail RISC-V architecture model, comprising all files and                        */
+/*  directories except for the snapshots of the Lem and Sail libraries                   */
+/*  in the prover_snapshots directory (which include copies of their                     */
+/*  licences), is subject to the BSD two-clause licence below.                           */
+/*                                                                                       */
+/*  Copyright (c) 2017-2021                                                              */
+/*    Prashanth Mundkur                                                                  */
+/*    Rishiyur S. Nikhil and Bluespec, Inc.                                              */
+/*    Jon French                                                                         */
+/*    Brian Campbell                                                                     */
+/*    Robert Norton-Wright                                                               */
+/*    Alasdair Armstrong                                                                 */
+/*    Thomas Bauereiss                                                                   */
+/*    Shaked Flur                                                                        */
+/*    Christopher Pulte                                                                  */
+/*    Peter Sewell                                                                       */
+/*    Alexander Richardson                                                               */
+/*    Hesham Almatary                                                                    */
+/*    Jessica Clarke                                                                     */
+/*    Microsoft, for contributions by Robert Norton-Wright and Nathaniel Wesley Filardo  */
+/*    Peter Rugg                                                                         */
+/*    Aril Computer Corp., for contributions by Scott Johnson                            */
+/*                                                                                       */
+/*  All rights reserved.                                                                 */
+/*                                                                                       */
+/*  This software was developed by the above within the Rigorous                         */
+/*  Engineering of Mainstream Systems (REMS) project, partly funded by                   */
+/*  EPSRC grant EP/K008528/1, at the Universities of Cambridge and                       */
+/*  Edinburgh.                                                                           */
+/*                                                                                       */
+/*  This software was developed by SRI International and the University of               */
+/*  Cambridge Computer Laboratory (Department of Computer Science and                    */
+/*  Technology) under DARPA/AFRL contract FA8650-18-C-7809 ("CIFV"), and                 */
+/*  under DARPA contract HR0011-18-C-0016 ("ECATS") as part of the DARPA                 */
+/*  SSITH research programme.                                                            */
+/*                                                                                       */
+/*  This project has received funding from the European Research Council                 */
+/*  (ERC) under the European Union’s Horizon 2020 research and innovation                */
+/*  programme (grant agreement 789108, ELVER).                                           */
+/*                                                                                       */
+/*                                                                                       */
+/*  Redistribution and use in source and binary forms, with or without                   */
+/*  modification, are permitted provided that the following conditions                   */
+/*  are met:                                                                             */
+/*  1. Redistributions of source code must retain the above copyright                    */
+/*     notice, this list of conditions and the following disclaimer.                     */
+/*  2. Redistributions in binary form must reproduce the above copyright                 */
+/*     notice, this list of conditions and the following disclaimer in                   */
+/*     the documentation and/or other materials provided with the                        */
+/*     distribution.                                                                     */
+/*                                                                                       */
+/*  THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS''                   */
+/*  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED                    */
+/*  TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A                      */
+/*  PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR                  */
+/*  CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,                         */
+/*  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT                     */
+/*  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF                     */
+/*  USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND                  */
+/*  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,                   */
+/*  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT                   */
+/*  OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF                   */
+/*  SUCH DAMAGE.                                                                         */
+/*=======================================================================================*/
+
 /* Machine-mode and supervisor-mode state definitions. */
 
 /* privilege level */
@@ -76,6 +144,8 @@ val sys_enable_writable_misa = {c: "sys_enable_writable_misa", ocaml: "Platform.
 val sys_enable_rvc = {c: "sys_enable_rvc", ocaml: "Platform.enable_rvc", _: "sys_enable_rvc"} : unit -> bool
 /* whether misa.{f,d} were enabled at boot */
 val sys_enable_fdext = {c: "sys_enable_fdext", ocaml: "Platform.enable_fdext", _: "sys_enable_fdext"} : unit -> bool
+/* whether zfinx was enabled at boot */
+val sys_enable_zfinx = {c: "sys_enable_zfinx", ocaml: "Platform.enable_zfinx", _: "sys_enable_zfinx"} : unit -> bool
 /* whether the N extension was enabled at boot */
 val sys_enable_next = {c: "sys_enable_next", ocaml: "Platform.enable_next", _: "sys_enable_next"} : unit -> bool
 
@@ -110,7 +180,33 @@ function haveMulDiv()  -> bool = misa.M() == 0b1
 function haveSupMode() -> bool = misa.S() == 0b1
 function haveUsrMode() -> bool = misa.U() == 0b1
 function haveNExt()    -> bool = misa.N() == 0b1
-/* see below for F and D extension tests */
+/* see below for F and D (and Z*inx counterparts) extension tests */
+
+/* BitManip extension support. */
+function haveZba()  -> bool = true
+function haveZbb()  -> bool = true
+function haveZbc()  -> bool = true
+function haveZbs()  -> bool = true
+
+/* Zfh (half-precision) extension */
+function haveZfh()  -> bool = true
+
+/* Scalar Cryptography extensions support. */
+function haveZbkb() -> bool = true
+function haveZbkc() -> bool = true
+function haveZbkx() -> bool = true
+
+/* Cryptography extension support. Note these will need updating once */
+/* Sail can be dynamically configured with different extension support */
+/* and have dynamic changes of XLEN via S/UXL */
+function haveZkr()    -> bool = true
+function haveZksh()   -> bool = true
+function haveZksed()  -> bool = true
+function haveZknh()   -> bool = true
+function haveZkne()   -> bool = true
+function haveZknd()   -> bool = true
+
+function haveZmmul()  -> bool = true
 
 bitfield Mstatush : bits(32) = {
   MBE  : 5,
@@ -157,8 +253,8 @@ register mstatus : Mstatus
 
 function effectivePrivilege(t : AccessType(ext_access_type), m : Mstatus, priv : Privilege) -> Privilege =
   if   t != Execute() & m.MPRV() == 0b1
-  then privLevel_of_bits(mstatus.MPP())
-  else cur_privilege
+  then privLevel_of_bits(m.MPP())
+  else priv
 
 function get_mstatus_SXL(m : Mstatus) -> arch_xlen = {
   if   sizeof(xlen) == 32
@@ -200,11 +296,13 @@ function legalize_mstatus(o : Mstatus, v : xlenbits) -> Mstatus = {
 
   /* We don't have any extension context yet. */
   let m = update_XS(m, extStatus_to_bits(Off));
+
   /* FS is WARL, and making FS writable can support the M-mode emulation of an FPU
-   * to support code running in S/U-modes.  Spike does this, and for now, we match it.
+   * to support code running in S/U-modes.  Spike does this, and for now, we match it,
+   * but only if Zfinx isn't enabled.
    * FIXME: This should be made a platform parameter.
    */
-
+  let m = if sys_enable_zfinx() then update_FS(m, extStatus_to_bits(Off)) else m;
   let dirty = extStatus_of_bits(m.FS()) == Dirty | extStatus_of_bits(m.XS()) == Dirty;
   let m = update_SD(m, bool_to_bits(dirty));
 
@@ -252,6 +350,10 @@ function in32BitMode() -> bool = {
 /* F and D extensions have to enabled both via misa.{FD} as well as mstatus.FS */
 function haveFExt()    -> bool = (misa.F() == 0b1) & (mstatus.FS() != 0b00)
 function haveDExt()    -> bool = (misa.D() == 0b1) & (mstatus.FS() != 0b00)
+
+/* Zfinx and Zdinx extensions (TODO: gate FCSR access on [mhs]stateen0 bit 1 when implemented) */
+function haveZfinx()   -> bool = sys_enable_zfinx()
+function haveZdinx()   -> bool = sys_enable_zfinx() & sizeof(flen) >= 64
 
 /* interrupt processing state */
 
@@ -668,3 +770,56 @@ function legalize_satp32(a : Architecture, o : bits(32), v : bits(32)) -> bits(3
 
 /* disabled trigger/debug module */
 register tselect : xlenbits
+
+/*
+ * The seed CSR (entropy source)
+ * ------------------------------------------------------------
+ */
+
+/* Valid return states for reading the seed CSR. */
+enum seed_opst = {
+  BIST, // Built-in-self-test. No randomness sampled.
+  ES16, // Entropy-sample-16. Valid 16-bits of randomness sampled.
+  WAIT, // Device still gathering entropy.
+  DEAD  // Fatal device compromise. No randomness sampled.
+}
+
+/* Mapping of status codes and their actual encodings. */
+mapping opst_code : seed_opst <-> bits(2) = {
+  BIST <-> 0b00,
+  WAIT <-> 0b01,
+  ES16 <-> 0b10,
+  DEAD <-> 0b11
+}
+
+/*
+ * Entropy Source - Platform access to random bits.
+ * WARNING: This function currently lacks a proper side-effect annotation.
+ *          If you are using theorem prover tool flows, you
+ *          may need to modify or stub out this function for now.
+ * NOTE: This would be better placed in riscv_platform.sail, but that file
+ *       appears _after_ this one in the compile order meaning the valspec
+ *       for this function is unavailable when it's first encountered in
+ *       read_seed_csr. Hence it appears here.
+ */
+val get_16_random_bits = {
+    ocaml: "Platform.get_16_random_bits",
+    interpreter: "Platform.get_16_random_bits",
+    c: "plat_get_16_random_bits",
+    lem: "plat_get_16_random_bits"
+} : unit -> bits(16)
+
+/* Entropy source spec requires an Illegal opcode exception be raised if the
+ * seed register is read without also being written. This function is only
+ * called once we know the CSR is being written, and all other access control
+ * checks have been done.
+ */
+function read_seed_csr() -> xlenbits = {
+  let reserved_bits : bits(6) = 0b000000;
+  let custom_bits : bits(8) = 0x00;
+  let seed : bits(16) = get_16_random_bits();
+  EXTZ(opst_code(ES16) @ reserved_bits @ custom_bits @ seed)
+}
+
+/* Writes to the seed CSR are ignored */
+function write_seed_csr () -> option(xlenbits) = None()

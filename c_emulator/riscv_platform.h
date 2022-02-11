@@ -4,6 +4,7 @@
 bool sys_enable_rvc(unit);
 bool sys_enable_next(unit);
 bool sys_enable_fdext(unit);
+bool sys_enable_zfinx(unit);
 bool sys_enable_writable_misa(unit);
 
 bool plat_enable_dirty_update(unit);
@@ -18,6 +19,9 @@ bool within_phys_mem(mach_bits, sail_int);
 
 mach_bits plat_rom_base(unit);
 mach_bits plat_rom_size(unit);
+
+// Provides entropy for the scalar cryptography extension.
+mach_bits plat_get_16_random_bits();
 
 mach_bits plat_clint_base(unit);
 mach_bits plat_clint_size(unit);
