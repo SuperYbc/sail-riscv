@@ -110,7 +110,7 @@ static struct option options[] = {
   {"enable-dirty-update",         no_argument,       0, 'd'},
   {"enable-misaligned",           no_argument,       0, 'm'},
   {"enable-pmp",                  no_argument,       0, 'P'},
-  {"enable-spmp",                 no_argument,       0, 'S'},
+  {"enable-smpu",                 no_argument,       0, 'S'},
   {"enable-next",                 no_argument,       0, 'N'},
   {"ram-size",                    required_argument, 0, 'z'},
   {"disable-compressed",          no_argument,       0, 'C'},
@@ -265,8 +265,8 @@ char *process_args(int argc, char **argv)
       rv_enable_pmp = true;
       break;
     case 'S':
-      fprintf(stderr, "enabling sPMP support.\n");
-      rv_enable_spmp = true;
+      fprintf(stderr, "enabling SMPU support.\n");
+      rv_enable_smpu = true;
       break;
     case 'C':
       fprintf(stderr, "disabling RVC compressed instructions.\n");
